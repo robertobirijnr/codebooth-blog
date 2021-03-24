@@ -14,6 +14,12 @@ export default {
   components: {
     PostList,
   },
+  props:{
+    posts:{
+      type:Array,
+      required:true
+    }
+  },
   asyncData(context, callback) {
     setTimeout(() => {
        callback(

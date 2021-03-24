@@ -16,10 +16,11 @@
 
 <script>
 export default {
-  asyncData(context, cb) {
+  asyncData(context) {
       console.log(context)
+      return new Promise((resolve,reject)=>{
     setTimeout(() => {
-      cb(null, {
+      resolve({
         loadPosts: {
             
             id: "2",
@@ -33,6 +34,13 @@ export default {
         },
       });
     }, 1000);
+      }).then(data=>{
+          return data
+      })
+      .catch(e=>{
+          context.error(new Error())
+      })
+    
   },
 };
 </script>
