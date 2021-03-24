@@ -1,24 +1,11 @@
 <template>
     <section class="featured-posts">
       <post-preview
-        id="1"
-        thumbnail="https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-        title="JavaScript"
-        previewText="This is the fundamentals"
-        :is-admin="isAdmin"
-      />
-      <post-preview
-        id="2"
-        thumbnail="https://images.pexels.com/photos/943096/pexels-photo-943096.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-        title="Vue js"
-        previewText="This is a nice js framework"
-        :is-admin="isAdmin"
-      />
-      <post-preview
-        id="3"
-        thumbnail="https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-        title="Nuxt js"
-        previewText="This is going to be fun"
+        v-for="post in posts" :key="post.id"
+        :id="post.id"
+        :thumbnail="post.thumbnail"
+        :title="post.title"
+        :previewText="post.postPreview"
         :is-admin="isAdmin"
       />
     </section>
@@ -34,6 +21,10 @@ import PostPreview from './postPreview.vue';
           isAdmin:{
             type:Boolean,
             default:false
+          },
+          posts:{
+            Type:Array,
+            required: true
           }
         }
     }
