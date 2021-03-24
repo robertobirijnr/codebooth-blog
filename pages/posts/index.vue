@@ -53,6 +53,9 @@ export default {
       });
     }, 1500);
   },
+  created(){
+    this.$store.dispatch('getPosts',this.loadPosts)
+  }
 };
 </script>
 
