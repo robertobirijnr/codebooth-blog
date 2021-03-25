@@ -11,7 +11,7 @@ import axios from "axios";
 import adminPostForm from "../../components/Admin/adminPostForm.vue";
 export default {
   layout: "admin",
-  middleware:'auth',
+  middleware:['check-auth','auth'],
   components: { adminPostForm },
   asyncData(context) {
     return axios
