@@ -5,7 +5,7 @@ const createStore = () => {
   return new Vuex.Store({
     state: {
       loadedPosts: [],
-      token:null
+      token: null
     },
 
 
@@ -20,13 +20,13 @@ const createStore = () => {
         const postIndex = state.loadedPosts.findIndex(post => post.id === editPost.id)
         state.loadedPosts[postIndex] = editPost
       },
-      setToken(state,authData){
+      setToken(state, authData) {
         state.token = authData
       }
     },
     actions: {
       nuxtServerInit(VuexContext, context) {
-        return axios.get(process.env.baseUrl+'/posts.json')
+        return axios.get(process.env.baseUrl + '/posts.json')
           .then(res => {
             //  commit requires array but we are getting objects so we need to convert
             const allPosts = [];
@@ -46,7 +46,7 @@ const createStore = () => {
           ...postData,
           updatedDate: new Date()
         }
-        return axios.post(process.env.baseUrl + '/posts.json', createdPost)
+        return axios.post(process.env.baseUrl + '/posts.json?auth' + VuexContext.state.token, createdPost)
           .then(response => {
             VuexContext.commit('addPost', {
               ...createdPost,
@@ -58,35 +58,35 @@ const createStore = () => {
             console.log(err)
           })
       },
-
+      //  you have to add ?auth to end of .json in other to validate it
       editPost(VuexContext, editPost) {
-        return axios.put(process.env.baseUrl +'/posts/' + editPost.id + '.json', editPost)
+        return axios.put(process.env.baseUrl + '/posts/' + editPost.id + '.json?auth=' + VuexContext.state.token, editPost)
           .then(res => {
-            VuexContext.commit('editPost',editPost)
+            VuexContext.commit('editPost', editPost)
           })
           .catch(e => console.log(e))
       },
 
-      authenticationUser(VuexContext,authData){
-        if(!authData.isLogin){
-        return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + process.env.firebase_KEY,{
-          email:authData.email,
-          password:authData.password,
-          returnSecureToken: true
-        })
-        .then(res=>{
-          VuexContext.commit('setToken',res.data.idToken)
-        })
-       }else{
-       return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.firebase_KEY,{
-           email:authData.email,
-           password:authData.password,
-           returnSecureToken:true
-         })
-         .then(res =>{
-           VuexContext.commit('setToken',res.data.idToken)
-         })
-       }
+      authenticationUser(VuexContext, authData) {
+        if (!authData.isLogin) {
+          return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + process.env.firebase_KEY, {
+              email: authData.email,
+              password: authData.password,
+              returnSecureToken: true
+            })
+            .then(res => {
+              VuexContext.commit('setToken', res.data.idToken)
+            })
+        } else {
+          return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.firebase_KEY, {
+              email: authData.email,
+              password: authData.password,
+              returnSecureToken: true
+            })
+            .then(res => {
+              VuexContext.commit('setToken', res.data.idToken)
+            })
+        }
       },
 
       getPosts({
