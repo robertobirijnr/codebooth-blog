@@ -42,6 +42,7 @@ export default {
   },
 
   env:{
-    baseUrl:process.env.BASE_URL|| 'https://codebooth-4fece-default-rtdb.firebaseio.com'
+    baseUrl:process.env.BASE_URL|| 'https://codebooth-4fece-default-rtdb.firebaseio.com',
+    firebase_KEY : 'AIzaSyDDB6PuPR1i5BxlB9VuOnZkOl2bj8cFhJQ'
   }
 }

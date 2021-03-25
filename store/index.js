@@ -4,8 +4,11 @@ import axios from 'axios'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      loadedPosts: []
+      loadedPosts: [],
+      token:null
     },
+
+
     mutations: {
       setPosts(state, posts) {
         state.loadedPosts = posts;
@@ -16,6 +19,9 @@ const createStore = () => {
       editPost(state, editPost) {
         const postIndex = state.loadedPosts.findIndex(post => post.id === editPost.id)
         state.loadedPosts[postIndex] = editPost
+      },
+      setToken(state,authData){
+        state.token = authData
       }
     },
     actions: {
@@ -59,6 +65,28 @@ const createStore = () => {
             VuexContext.commit('editPost',editPost)
           })
           .catch(e => console.log(e))
+      },
+
+      authenticationUser(VuexContext,authData){
+        if(!authData.isLogin){
+        return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + process.env.firebase_KEY,{
+          email:authData.email,
+          password:authData.password,
+          returnSecureToken: true
+        })
+        .then(res=>{
+          VuexContext.commit('setToken',res.data.idToken)
+        })
+       }else{
+       return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.firebase_KEY,{
+           email:authData.email,
+           password:authData.password,
+           returnSecureToken:true
+         })
+         .then(res =>{
+           VuexContext.commit('setToken',res.data.idToken)
+         })
+       }
       },
 
       getPosts({
