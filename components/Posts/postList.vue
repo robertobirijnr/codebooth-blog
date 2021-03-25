@@ -3,9 +3,9 @@
       <post-preview
         v-for="post in posts" :key="post.id"
         :id="post.id"
-        :thumbnail="post.thumbnail"
+        :thumbnailLink="post.thumbnailLink"
         :title="post.title"
-        :previewText="post.postPreview"
+        :previewText="post.content"
         :is-admin="isAdmin"
       />
     </section>

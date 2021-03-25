@@ -1,64 +1,74 @@
 import Vuex from 'vuex';
-
+import axios from 'axios'
 
 const createStore = () => {
   return new Vuex.Store({
-    state:{
+    state: {
       loadedPosts: []
     },
-    mutations:{
-      setPosts(state, posts){
+    mutations: {
+      setPosts(state, posts) {
         state.loadedPosts = posts;
+      },
+      addPost(state, post) {
+        state.loadedPosts.push(post)
+      },
+      editPost(state, editPost) {
+        const postIndex = state.loadedPosts.findIndex(post => post.id === editPost.id)
+        state.loadedPosts[postIndex] = editPost
       }
     },
-    actions:{
-      nuxtServerInit(VuexContext,context){
-        return new Promise((resolve,reject)=>{
-          setTimeout(() => {
-            VuexContext.commit('setPosts',
-            
-               [
-                {
-                  id: "1",
-                  title: "JavaScript",
-                  postPreview: "You dont know javaScript",
-                  thumbnail:
-                    "https://images.pexels.com/photos/4974920/pexels-photo-4974920.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                },
-                {
-                  id: "2",
-                  title: "Vue Js",
-                  postPreview: "Road to become vue js developer",
-                  thumbnail:
-                    "https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                },
-                {
-                  id: "3",
-                  title: "Nuxt js",
-                  postPreview: "This is awesome technology",
-                  thumbnail:
-                    "https://images.pexels.com/photos/1181267/pexels-photo-1181267.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                },
-                {
-                  id: "4",
-                  title: "Node js",
-                  postPreview: "Nodejs is a js runtime environment",
-                  thumbnail:
-                    "https://images.pexels.com/photos/693859/pexels-photo-693859.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                },
-              ],
-            )
-          resolve();
-        }, 1500);
-        })
+    actions: {
+      nuxtServerInit(VuexContext, context) {
+        return axios.get('https://codebooth-4fece-default-rtdb.firebaseio.com/posts.json')
+          .then(res => {
+            //  commit requires array but we are getting objects so we need to convert
+            const allPosts = [];
+            for (const key in res.data) {
+              allPosts.push({
+                ...res.data[key],
+                id: key
+              })
+            }
+            VuexContext.commit('setPosts', allPosts)
+          })
+          .catch(e => context.error(e))
       },
 
-      getPosts({commit}, posts){
+      addPost(VuexContext, postData) {
+        const createdPost = {
+          ...postData,
+          updatedDate: new Date()
+        }
+        return axios.post('https://codebooth-4fece-default-rtdb.firebaseio.com/posts.json', createdPost)
+          .then(response => {
+            VuexContext.commit('addPost', {
+              ...createdPost,
+              id: response.data.name
+            })
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+
+      editPost(VuexContext, editPost) {
+        return axios.put('https://codebooth-4fece-default-rtdb.firebaseio.com/posts/' + editPost.id + '.json', editPost)
+          .then(res => {
+            VuexContext.commit('editPost',editPost)
+          })
+          .catch(e => console.log(e))
+      },
+
+      getPosts({
+        commit
+      }, posts) {
         commit('setPosts', posts);
       }
     },
-    getters:{
-      loadedPosts(state){
+    getters: {
+      loadedPosts(state) {
         return state.loadedPosts;
       }
     }
