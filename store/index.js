@@ -20,7 +20,7 @@ const createStore = () => {
     },
     actions: {
       nuxtServerInit(VuexContext, context) {
-        return axios.get('https://codebooth-4fece-default-rtdb.firebaseio.com/posts.json')
+        return axios.get(process.env.baseUrl+'/posts.json')
           .then(res => {
             //  commit requires array but we are getting objects so we need to convert
             const allPosts = [];
@@ -40,7 +40,7 @@ const createStore = () => {
           ...postData,
           updatedDate: new Date()
         }
-        return axios.post('https://codebooth-4fece-default-rtdb.firebaseio.com/posts.json', createdPost)
+        return axios.post(process.env.baseUrl + '/posts.json', createdPost)
           .then(response => {
             VuexContext.commit('addPost', {
               ...createdPost,
@@ -54,7 +54,7 @@ const createStore = () => {
       },
 
       editPost(VuexContext, editPost) {
-        return axios.put('https://codebooth-4fece-default-rtdb.firebaseio.com/posts/' + editPost.id + '.json', editPost)
+        return axios.put(process.env.baseUrl +'/posts/' + editPost.id + '.json', editPost)
           .then(res => {
             VuexContext.commit('editPost',editPost)
           })
