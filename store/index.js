@@ -22,6 +22,9 @@ const createStore = () => {
       },
       setToken(state, authData) {
         state.token = authData
+      },
+      clearToken(state) {
+        state.token = null
       }
     },
     actions: {
@@ -76,6 +79,7 @@ const createStore = () => {
             })
             .then(res => {
               VuexContext.commit('setToken', res.data.idToken)
+              VuexContext.dispatch('setLogoutTimer', res.data.expiresIn * 1000)
             })
         } else {
           return axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.firebase_KEY, {
@@ -85,19 +89,25 @@ const createStore = () => {
             })
             .then(res => {
               VuexContext.commit('setToken', res.data.idToken)
+              VuexContext.dispatch('setLogoutTimer', res.data.expiresIn * 1000)
             })
         }
       },
-
-      getPosts({
-        commit
-      }, posts) {
-        commit('setPosts', posts);
+      setLogoutTimer(VuexContext, duration) {
+        setTimeout(() => {
+          VuexContext.commit('clearToken')
+        }, duration)
       }
+
+
+
     },
     getters: {
       loadedPosts(state) {
         return state.loadedPosts;
+      },
+      isAuthenticated(state) {
+        return state.token != null
       }
     }
   });
