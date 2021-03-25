@@ -16,15 +16,12 @@
 </template>
 
 <script>
-import AppControlInput from '@/components/UI/AppControlInput'
-import AppButton from '@/components/UI/AppButton'
+// you dont needto do this again since its being import at the plugins folder
+// import AppControlInput from '@/components/UI/AppControlInput'
+// import AppButton from '@/components/UI/AppButton'
 
 export default {
   name: 'AdminAuthPage',
-  components: {
-    AppControlInput,
-    AppButton
-  },
   data() {
     return {
       isLogin: true

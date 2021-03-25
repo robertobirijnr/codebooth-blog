@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import AppButton from "@/components/UI/AppButton.vue";
-import AppControlInput from "@/components/UI/AppControlInput.vue";
+// import AppButton from "@/components/UI/AppButton.vue";
+// import AppControlInput from "@/components/UI/AppControlInput.vue";
 export default {
   props: {
     post: {
@@ -31,7 +31,7 @@ export default {
       required: false,
     },
   },
-  components: { AppControlInput, AppButton },
+  // components: { AppControlInput, AppButton },
   data() {
     return {
       editedPost: this.post
