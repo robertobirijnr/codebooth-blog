@@ -15,32 +15,21 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   asyncData(context) {
-      console.log(context)
-      return new Promise((resolve,reject)=>{
-    setTimeout(() => {
-      resolve({
-        loadPosts: {
-            
-            id: "2",
-            author:'Bob Alaska',
-            updatedDate:"02/02/21",
-            title: "Vue Js",
-            postPreview: "Road to become vue js developer",
-            thumbnail:
-              "https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-          
-        },
-      });
-    }, 1000);
-      }).then(data=>{
-          return data
-      })
-      .catch(e=>{
-          context.error(new Error())
-      })
-    
+    if(context.payload){
+      return {
+        loadPosts:context.payload.postData
+      }
+    }
+     return axios.get(process.env.baseUrl+'/posts/'+context.params.id +'.json')
+     .then(res =>{
+       return{
+         loadPosts:res.data
+       }
+     })
+     .catch(e=> context.error(e))
   },
 };
 </script>
